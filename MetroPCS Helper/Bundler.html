@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+	</body>
+	<script type="text/javascript">
+		var accessories = {
+			'keys' : ['case', 'hp', 'tgs', 'popSocket', 'metro8gb', 'other8gb', '3600', 'smallAtalax', 'mediumAtalax', 'bigAtalax'],
+			'case' : {
+				'cost' : 25,
+				'limit' : 15
+			},
+			'hp' : {
+				'cost' : 15,
+				'limit' : 10
+			},
+			'tgs' : {
+				'cost' : 15,
+				'limit' : 10
+			},
+			'popSocket' : {
+				'cost' : 15,
+				'limit' : 10
+			},
+			'metro8gb' : {
+				'cost' : 20,
+				'limit' : 15
+			},
+			'other8gb' : {
+				'cost' : 25,
+				'limit' : 20
+			},
+			'3600' : {
+				'cost' : 30,
+				'limit' : 20
+			},
+			'smallAtalax' : {
+				'cost' : 49,
+				'limit' : 40
+			},
+			'mediumAtalax' : {
+				'cost' : 70,
+				'limit' : 60
+			},
+			'bigAtalax' : {
+				'cost' : 120,
+				'limit' : 100
+			},
+			most: function(cost){
+				var max = 0;
+				var name;
+				this.keys.forEach(function(elem){
+					if(accessories[elem].limit > max && accessories[elem].limit < cost){
+						max = accessories[elem].limit;
+						name = elem;
+					}
+				});
+				return name;
+			},
+		}
+		var accList = {
+			"counter" : 0,
+			"List" : [],
+			"total": 0,
+			"size": 0,
+			"add": function (name) {
+				var obj = {};
+				obj = {"id": this.counter, "name": name, "cost": accessories[name].cost, "object": accessories[name]};
+				this.List.push(obj);
+				var temp = this.counter;
+				this.counter = this.counter + 1;
+				this.size = this.size + 1;
+				this.calcTotal();
+				return {counter: temp, cost: obj.cost};
+			},
+			calcTotal: function(){
+				var temp = 0;
+				this.List.forEach(function(elem){
+					temp = temp + elem.cost;
+				});
+				this.total = temp;
+			},
+			lowest: function(id){
+				var elem = this.List[this.searchId(id)];
+				elem.cost = elem.object.limit;
+				if(elem["origCost"]){
+					elem["origCost"] = elem.cost;
+				}
+			},
+			searchId: function (id){
+				var theList = this.List;
+				var ind = -1;
+				this.List.forEach(function(elem){
+					if(elem.id == id){
+						return ind = theList.indexOf(elem);
+					}
+				});
+				return ind;
+			},
+			remove: function(id){
+				var ind = accList.searchId(id);
+				if(ind != -1){
+					accList.List.splice(ind, 1);
+				}
+				this.size = this.size - 1;
+				this.calcTotal();
+			},
+			cheapest: function(){
+				var cheap = {object:{limit:1000}};
+				this.List.forEach(function(elem){
+					if(elem.object.limit < cheap.object.limit){
+						cheap = elem;
+					}
+				});
+				return cheap;
+			},
+			reset: function(){
+				this.List.forEach(function(elem){
+					elem.cost = accessories[elem.name].cost;
+					adjustPrice(elem.id);
+				});
+				this.calcTotal();
+			},
+			adjustToOrig: function(){
+				this.List.forEach(function(elem){
+					if(elem["origCost"]){
+						elem.cost = elem["origCost"];
+						adjustPrice(elem.id);
+					}
+				});
+			},
+			resetOrig: function(){
+				this.List.forEach(function(elem){
+					if(elem["origCost"]){
+						elem["origCost"]= elem.cost;
+					}
+				});
+			},
+			empty: function(){
+				this.List = [];
+				this.size = 0;
+				this.calcTotal();
+			},
+			most: function(cost){
+				cost = Math.abs(cost);
+				var max = {cost:0};
+				this.List.forEach(function(elem){
+					if(elem.object.limit > max.cost && elem.object.limit < cost){
+						max = elem;
+					}
+				});
+				if(max.id >= 0){
+					return max;
+				}
+				return this.cheapest();
+			},
+		};
+		var jQueryScriptOutputted = false;
+		var created = false;
+		var initJQuery = function() {
+			if (typeof(jQuery) == 'undefined') {
+				if (! jQueryScriptOutputted) {
+					jQueryScriptOutputted = true;
+					var script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src = 'https://code.jquery.com/jquery-1.12.4.js';
+					script.class = "toberemovedlater";
+					document.getElementsByTagName('head')[0].appendChild(script);
+				}
+				setTimeout("initJQuery()", 50);
+			}else{
+				create();
+			}
+		}
+			
+		var create = function() {
+			if(created)
+				return;
+			try{
+				if(jQuery("#mymussabbundledialog").lenght == 0)
+					return;
+			jQuery('body').append('<div id="mymussabbundledialog" style="display:none;" title="Bundler">' + 
+				'<div id="selectoptions"><select><option value="fitupgrade">Fit Upgrade</option><option value="upgrade">Upgrade</option><option value="fitact">Fit Activation</option><option value="act">Activation</option></select>' +
+				'</br></br><input type="number" id="phone" placeholder="Phone Cost"></div>' + 
+				'</br><label>Instant Rebate:</label><input type="number" id="ir" placeholder="Phone Instant Rebate" value="0">' +
+				'</br></br><label>Accessories: </label><div id="accList" style="border:1px;border-style:double;padding:10px;"></div>' +
+				'<label style="float:right" id="totAcc">$0</label>' +
+				'</br></br><label>Total: $</label><label id="total">0</label>' +
+				'</br></br><div style="border:1px;border-style:double;padding:10px;float:left"><label>Add Accessory: </label>' +
+				'</br></br><select id="avAcc"></select>' +
+				'</br></br><label>Name: </label><input type="text" id="accname" placeholder="Accessory name">' + 
+				'</br></br><label>Price: </label><input type="number" id="cost" placeholder="Default Cost">' +
+				'</br></br><label>Limit: </label><input type="number" id="limit" placeholder="The Lowest you can go"><button id="addsubmit" onclick="addNew();">Add</button></div></div>');
+			
+			jQuery('head').append('<script class="toberemovedlater" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></' + 'script>' +
+				'<link class="toberemovedlater" rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">');
+
+				accessories.keys.forEach(function(key){
+					$('#avAcc').append($('<option value="' + key + '">' + key + '</option>'));
+				});
+
+				jQuery('#avAcc').on('change', function() {
+					var elem = accessories[$('#avAcc').val()];
+					document.getElementById("accname").value = $('#avAcc').val();
+					document.getElementById("cost").value = elem.cost;
+					document.getElementById("limit").value = elem.limit;
+				}).trigger('change');
+
+				var change = function(){
+					emptyAcc();
+					add("case").add("tgs").add("hp");
+					calc();
+				}
+				document.getElementById('phone').onchange = function() {change()};
+				document.getElementById('ir').onchange = function() {change()};
+				jQuery('#selectoptions').on('change', '#activation, #fitamount', change);
+
+				jQuery('#selectoptions select').on('change', function () {
+					var actam;
+					var fitam;
+					if(document.getElementById('activation')){
+						actam = parseInt(document.getElementById('activation').value);
+					}
+					if(document.getElementById('fitamount')){
+						fitam = parseInt(document.getElementById('fitamount').value);
+					}
+					jQuery('#mymussabbundledialog #selectoptions #divactivation').remove();
+					jQuery('#mymussabbundledialog #selectoptions #divfitamount').remove();
+					var activ = '<span id = "divactivation"></br></br><input type="number" id="activation" placeholder="Activation" value="' + actam +'"></span>';
+					var fit = '<span id="divfitamount"></br></br><input type="number" id="fitamount" placeholder="Amount To Fit" value="' + fitam + '"></label></span>';
+					var sel = jQuery('#selectoptions select').val();
+					if(sel == 'fitupgrade'){
+						jQuery('#selectoptions').append(fit);
+					}else if(sel == 'fitact'){
+						jQuery('#selectoptions').append(activ).append(fit);
+					}else if(sel == 'act'){
+						jQuery('#selectoptions').append(activ);
+					}
+					calc();
+				}).trigger( "change" );
+
+				created = true;
+
+				setTimeout( function() {
+					jQuery( "#mymussabbundledialog" ).dialog({
+						minWidth: 350,
+					});
+				}, 500);
+			}catch(err){
+
+			}
+		}
+
+		var add = function(name){
+			var obj = accList.add(name);
+			var elem = $('<div style="padding:10px;border:0.5px;border-style:dotted" id="accNo' + obj.counter + '"><label>' + name + '</label><button style="font-size:10px;;float:right;margin-top:-4px" onclick="lowest(' + obj.counter + ')">Lowest</button><button style="font-size:10px;;float:right;margin-top:-4px" onclick="remove(' + obj.counter + ');calc()">Remove</button><label class="cost" style="float:right; margin:0 10px">\t$' + obj.cost.toFixed(2) + '</label></div>');
+			$('#mymussabbundledialog #accList').append(elem);
+			calcTotal();
+			return this;
+		}
+
+		var addNew = function(){
+			var name = document.getElementById('accname').value;
+			var cost = document.getElementById('cost').value;
+			var limit = document.getElementById('limit').value;
+			if(!name || !cost || !limit){
+				return;
+			}
+			var ind = accessories.keys.indexOf(name);
+			if(ind == -1){
+				accessories.keys.push(name);
+				accessories[name] = {cost: parseInt(cost), limit: parseInt(limit)};
+			}
+			add(name);
+		}
+
+		var size = function(){
+			return accList.size();
+		}
+		var lowest = function(id){
+			accList.lowest(id);
+			adjustPrice(id);
+			calc();
+		}
+
+		var remove = function(id){
+			accList.remove(id);
+			jQuery('#mymussabbundledialog #accList #accNo' + id).remove();
+			calcTotal();
+			return this;
+		}
+
+		try{
+			window.initJQuery = initJQuery;
+			initJQuery();
+		}catch(err){}
+		create();
+
+		var adjust = function(difference){
+			var diff = difference;
+			if(diff < -0.00000000001){
+				accList.List.forEach(function(elem){
+					if(diff > -0.00000000001){
+						return;
+					}
+					var cost = elem.cost;
+					if(elem["origCost"]){
+						cost = elem["origCost"];
+					}
+					elem.cost = Math.max(cost + diff, elem.object.limit);
+					elem["origCost"] = cost;
+					adjustPrice(elem.id);
+					diff = diff + (cost - elem.cost);
+				});
+				if(diff < -0.00000000001 && accList.size > 0){
+					var obj = accList.most(difference);
+					var id = obj.id;
+					remove(id);
+					// accList.reset();
+					var cost = obj.cost;
+					if(obj["origCost"]){
+						cost = obj["origCost"];
+					}
+					accList.adjustToOrig();
+					adjust(difference + cost);
+				}
+			}else{
+				var name = accessories.most(difference);
+				if(name){
+					add(name);
+					adjust(difference - accessories[name].cost);
+				}else{
+					if(diff > 0.00000000001){
+						accList.List.forEach(function(elem){
+							if(diff < 0.00000000001){
+								return;
+							}
+							var cost = elem.cost;
+							elem.cost = Math.min(cost + diff, elem.object.cost + 5);
+							adjustPrice(elem.id);
+							diff = diff - (elem.cost - cost);
+						});
+						if(diff > 0.00000000001 && accList.size > 0){
+							var elem = accList.List[0];
+							elem.cost = elem.cost + diff;
+							adjustPrice(elem.id);
+						}
+					}
+				}
+			}
+		}
+
+		var adjustPrice = function(id){
+			var ind = accList.searchId(id);
+			var obj = accList.List[ind];
+			var elem = jQuery('#mymussabbundledialog #accList #accNo' + id + ' .cost');
+			elem.html("$" + obj.cost.toFixed(2));
+			accList.calcTotal();
+		}
+
+		var phonePrice = function(){
+			var phone = parseInt(document.getElementById('phone').value);
+			var ir = parseInt(document.getElementById('ir').value);
+			ir = Math.min(ir, phone);
+			phone = phone + (phone * 0.09) - ir;
+			return phone;
+		}
+
+		var calcTotal = function(){
+			var phone = phonePrice();
+			var activation;
+			if(document.getElementById('activation')){
+				activation = parseInt(document.getElementById('activation').value);
+			}else{
+				activation = 15;
+			}
+			var accessories = accList.total;
+			document.getElementById("totAcc").innerHTML = "$" + accessories.toFixed(2);
+			var total = phone + activation + (accessories*1.09);
+			total = total.toFixed(2);
+			document.getElementById('total').innerHTML = total;
+		}
+
+		var emptyAcc = function(){
+			jQuery('#mymussabbundledialog #accList *').remove();
+			accList.empty();
+		}
+
+		var calc = function() {
+			var phone = phonePrice();
+			var fitamount;
+			var activation;
+			if(document.getElementById('activation')){
+				activation = parseInt(document.getElementById('activation').value);
+			}else{
+				activation = 15;
+			}
+			if(document.getElementById('fitamount')){
+				fitamount = parseInt(document.getElementById('fitamount').value);
+			}
+			if(!jQuery.isNumeric(phone) || !jQuery.isNumeric(activation)){
+				return;
+			}
+			var accessories = accList.total;
+			var total = phone + activation + (accessories*0.09) + accessories;
+			if(!jQuery.isNumeric(fitamount)){
+
+			}else{
+				var diff = fitamount - total;
+				accList.resetOrig();
+				adjust(diff/1.09);
+			}
+			calcTotal();
+		}
+	</script>
+</html>
