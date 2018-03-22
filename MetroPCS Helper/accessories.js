@@ -1,5 +1,5 @@
 var accessories = {
-			'keys' : ['case', 'hp', 'tgs', 'popSocket', 'metro8gb', 'other8gb', '3600', 'smallAtalax', 'mediumAtalax', 'bigAtalax'],
+			'keys' : ['case', 'hp', 'tgs', 'popSocket', 'metro8gb', 'other8gb', '32gb', '3600', 'smallAtalax', 'mediumAtalax', 'bigAtalax'],
 			'case' : {
 				'cost' : 25,
 				'limit' : 15
