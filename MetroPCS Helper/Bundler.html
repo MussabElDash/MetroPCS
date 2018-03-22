@@ -225,6 +225,11 @@
 				accessories[name] = {cost: parseInt(cost), limit: parseInt(limit)};
 			}
 			add(name);
+			$('#avAcc option').remove();
+			accessories.keys.forEach(function(key){
+				$('#avAcc').append($('<option value="' + key + '">' + key + '</option>'));
+			});
+			jQuery('#avAcc').trigger('change');
 		}
 
 		var size = function(){
