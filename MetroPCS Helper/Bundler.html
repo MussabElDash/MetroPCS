@@ -130,20 +130,20 @@
 			if(created)
 				return;
 			try{
-				if(jQuery("#mymussabbundledialog").length > 0)
+				if(jQuery("#mymussabbundledialog").length != 0)
 					return;
-			jQuery('body').append('<div id="mymussabbundledialog" style="display:none;" title="Bundler">' + 
-				'<div id="selectoptions"><select><option value="fitupgrade">Fit Upgrade</option><option value="upgrade">Upgrade</option><option value="fitact">Fit Activation</option><option value="act">Activation</option></select>' +
-				'</br></br><input type="number" id="phone" placeholder="Phone Cost"></div>' + 
-				'</br><label>Instant Rebate:</label><input type="number" id="ir" placeholder="Phone Instant Rebate" value="0">' +
-				'</br></br><label>Accessories: </label><div id="accList" style="border:1px;border-style:double;padding:10px;"></div>' +
+			jQuery('body').append('<div id="mymussabbundledialog" style="display:none;text-align=center" title="Bundler">' + 
+				'<div id="selectoptions" style="width:100%;text-align:center;"><select><option value="fitupgrade">Fit Upgrade</option><option value="upgrade">Upgrade</option><option value="fitact">Fit Activation</option><option value="act">Activation</option></select>' +
+				'</br></br><table style="width:100%;"><td style="width:49%;text-align:center"><label>Phone Cost:</label><input style="width:75%" type="number" id="phone" placeholder="Phone Cost"></td><td style="width:49%;text-align:center"><label>Instant Rebate:</label><input style="width:75%" type="number" id="ir" placeholder="Phone Instant Rebate" value="0"></td></table></div>' + 
+				'</br><label>Accessories: </label><div id="accList" style="border:1px;border-style:double;padding:10px;"></div>' +
 				'<table style="width:100%"><td style="width:33%;text-align:center"><button onclick="lowest()">Lowest</button></td><td style="width:33%;text-align:center"><label id="totAcc">$0</label></td><td style="width:33%;text-align:center"><button onclick="remove()">Remove</button></td></table>' +
 				'</br></br><label>Total: $</label><label id="total">0</label>' + 
-				'</br></br><div style="border:1px;border-style:double;padding:10px;float:left"><label>Add Accessory: </label>' +
-				'</br></br><select id="avAcc"></select>' +
-				'</br></br><label>Name: </label><input type="text" id="accname" placeholder="Accessory name">' + 
-				'</br></br><label>Price: </label><input type="number" id="cost" placeholder="Default Cost">' +
-				'</br></br><label>Limit: </label><input type="number" id="limit" placeholder="The Lowest you can go"><button id="addsubmit" onclick="addNew();">Add</button></div></div>');
+				'</br></br><div style="border:1px;border-style:double;padding:10px;float:left;text-align:center;width:93%"><label>Add Accessory: </label>' +
+				'<select id="avAcc"></select>' +
+				'<table style="width:100%">' +
+				'<td style="width:30%"><label>Name: </label><input style="width:75%" type="text" id="accname" placeholder="Accessory name"></td>' + 
+				'<td style="width:30%"><label>Price: </label><input style="width:75%" type="number" id="cost" placeholder="Default Cost"></td>' +
+				'<td style="width:30%"><label>Lowest: </label><input style="width:75%" type="number" id="limit" placeholder="The Lowest you can go"></td></table><button id="addsubmit" onclick="addNew();">Add</button></div></div>');
 			
 			jQuery('head').append('<script class="toberemovedlater" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></' + 'script>' +
 				'<link class="toberemovedlater" rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">');
@@ -179,8 +179,8 @@
 					}
 					jQuery('#mymussabbundledialog #selectoptions #divactivation').remove();
 					jQuery('#mymussabbundledialog #selectoptions #divfitamount').remove();
-					var activ = '<span id = "divactivation"></br></br><input type="number" id="activation" placeholder="Activation" value="' + actam +'"></span>';
-					var fit = '<span id="divfitamount"></br></br><input type="number" id="fitamount" placeholder="Amount To Fit" value="' + fitam + '"></label></span>';
+					var activ = '<span id = "divactivation"></br><label>Price Plan:</label><input type="number" id="activation" placeholder="Activation" value="' + actam +'"></br></span>';
+					var fit = '<span id="divfitamount"></br><label>Amount to Fit:</label><input type="number" id="fitamount" placeholder="Amount To Fit" value="' + fitam + '"></span>';
 					var sel = jQuery('#selectoptions select').val();
 					if(sel == 'fitupgrade'){
 						jQuery('#selectoptions').append(fit);
