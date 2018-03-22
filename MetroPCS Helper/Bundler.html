@@ -130,15 +130,15 @@
 			if(created)
 				return;
 			try{
-				if(jQuery("#mymussabbundledialog").lenght == 0)
+				if(jQuery("#mymussabbundledialog").length > 0)
 					return;
 			jQuery('body').append('<div id="mymussabbundledialog" style="display:none;" title="Bundler">' + 
 				'<div id="selectoptions"><select><option value="fitupgrade">Fit Upgrade</option><option value="upgrade">Upgrade</option><option value="fitact">Fit Activation</option><option value="act">Activation</option></select>' +
 				'</br></br><input type="number" id="phone" placeholder="Phone Cost"></div>' + 
 				'</br><label>Instant Rebate:</label><input type="number" id="ir" placeholder="Phone Instant Rebate" value="0">' +
 				'</br></br><label>Accessories: </label><div id="accList" style="border:1px;border-style:double;padding:10px;"></div>' +
-				'<label style="float:right" id="totAcc">$0</label>' +
-				'</br></br><label>Total: $</label><label id="total">0</label>' +
+				'<table style="width:100%"><td style="width:33%;text-align:center"><button onclick="lowest()">Lowest</button></td><td style="width:33%;text-align:center"><label id="totAcc">$0</label></td><td style="width:33%;text-align:center"><button onclick="remove()">Remove</button></td></table>' +
+				'</br></br><label>Total: $</label><label id="total">0</label>' + 
 				'</br></br><div style="border:1px;border-style:double;padding:10px;float:left"><label>Add Accessory: </label>' +
 				'</br></br><select id="avAcc"></select>' +
 				'</br></br><label>Name: </label><input type="text" id="accname" placeholder="Accessory name">' + 
@@ -206,7 +206,7 @@
 
 		var add = function(name){
 			var obj = accList.add(name);
-			var elem = $('<div style="padding:10px;border:0.5px;border-style:dotted" id="accNo' + obj.counter + '"><label>' + name + '</label><button style="font-size:10px;;float:right;margin-top:-4px" onclick="lowest(' + obj.counter + ')">Lowest</button><button style="font-size:10px;;float:right;margin-top:-4px" onclick="remove(' + obj.counter + ');calc()">Remove</button><label class="cost" style="float:right; margin:0 10px">\t$' + obj.cost.toFixed(2) + '</label></div>');
+			var elem = $('<div style="padding:10px;border:0.5px;border-style:dotted"><label>' + name + '</label><input style="float:right" id="accNo' + obj.counter + '" type="checkbox"><label class="cost" style="float:right; margin:0 10px">\t$' + obj.cost.toFixed(2) + '</label></div>');
 			$('#mymussabbundledialog #accList').append(elem);
 			calcTotal();
 			return this;
@@ -230,17 +230,39 @@
 		var size = function(){
 			return accList.size();
 		}
-		var lowest = function(id){
+		var lowest1 = function(id){
 			accList.lowest(id);
 			adjustPrice(id);
+		}
+		var lowest = function(){
+			var checked = $('#mymussabbundledialog #accList *:checked');
+			var len = checked.length;
+			for(var i = 0; i < len; i++){
+				var elem = checked[i];
+				var id = elem.id;
+				id = parseInt(id.replace("accNo", ""));
+				lowest1(id);
+			}
+			checked.prop('checked', false);
 			calc();
 		}
 
-		var remove = function(id){
+		var remove1 = function(id){
 			accList.remove(id);
-			jQuery('#mymussabbundledialog #accList #accNo' + id).remove();
-			calcTotal();
+			jQuery('#mymussabbundledialog #accList #accNo' + id).parent().remove();
 			return this;
+		}
+		var remove = function(){
+			var checked = $('#mymussabbundledialog #accList *:checked');
+			var len = checked.length;
+			for(var i = 0; i < len; i++){
+				var elem = checked[i];
+				var id = elem.id;
+				id = parseInt(id.replace("accNo", ""));
+				remove1(id);
+			}
+			checked.prop('checked', false);
+			calc();
 		}
 
 		try{
@@ -306,7 +328,7 @@
 		var adjustPrice = function(id){
 			var ind = accList.searchId(id);
 			var obj = accList.List[ind];
-			var elem = jQuery('#mymussabbundledialog #accList #accNo' + id + ' .cost');
+			var elem = jQuery('#mymussabbundledialog #accList #accNo' + id + ' ~ .cost');
 			elem.html("$" + obj.cost.toFixed(2));
 			accList.calcTotal();
 		}
