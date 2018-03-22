@@ -24,6 +24,10 @@ var accessories = {
 				'cost' : 25,
 				'limit' : 20
 			},
+			'32gb' : {
+				'cost' : 40,
+				'limit' : 30
+			},
 			'3600' : {
 				'cost' : 30,
 				'limit' : 20
