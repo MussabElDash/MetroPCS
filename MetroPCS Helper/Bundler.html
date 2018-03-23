@@ -92,7 +92,7 @@
 				cost = Math.abs(cost);
 				var max = {cost:0};
 				this.List.forEach(function(elem){
-					if(elem.cost > max.cost && elem.cost < cost){
+					if(elem.object.limit > max.cost && elem.object.limit < cost){
 						max = elem;
 					}
 				});
