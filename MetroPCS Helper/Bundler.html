@@ -182,7 +182,7 @@
 					var actam;
 					var fitam;
 					if(document.getElementById('activation')){
-						actam = parseInt(document.getElementById('activation').value);
+						actam = parseFloat(document.getElementById('activation').value);
 					}
 					if(document.getElementById('fitamount')){
 						fitam = parseFloat(document.getElementById('fitamount').value);
@@ -360,7 +360,7 @@
 			var phone = phonePrice();
 			var activation;
 			if(document.getElementById('activation')){
-				activation = parseInt(document.getElementById('activation').value);
+				activation = parseFloat(document.getElementById('activation').value);
 			}else{
 				activation = 15;
 			}
@@ -381,7 +381,7 @@
 			var fitamount;
 			var activation;
 			if(document.getElementById('activation')){
-				activation = parseInt(document.getElementById('activation').value);
+				activation = parseFloat(document.getElementById('activation').value);
 			}else{
 				activation = 15;
 			}
