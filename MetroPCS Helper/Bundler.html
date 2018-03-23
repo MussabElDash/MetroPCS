@@ -185,7 +185,7 @@
 						actam = parseInt(document.getElementById('activation').value);
 					}
 					if(document.getElementById('fitamount')){
-						fitam = parseInt(document.getElementById('fitamount').value);
+						fitam = parseFloat(document.getElementById('fitamount').value);
 					}
 					jQuery('#mymussabbundledialog #selectoptions #divactivation').remove();
 					jQuery('#mymussabbundledialog #selectoptions #divfitamount').remove();
@@ -386,7 +386,7 @@
 				activation = 15;
 			}
 			if(document.getElementById('fitamount')){
-				fitamount = parseInt(document.getElementById('fitamount').value);
+				fitamount = parseFloat(document.getElementById('fitamount').value);
 			}
 			if(!jQuery.isNumeric(phone) || !jQuery.isNumeric(activation)){
 				return;
