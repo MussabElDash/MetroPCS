@@ -233,7 +233,8 @@
 			var ind = accessories.keys.indexOf(name);
 			if(ind == -1){
 				accessories.keys.push(name);
-				accessories[name] = {cost: parseInt(cost), limit: parseInt(limit)};
+				accessories[name] = {cost: 
+						     (cost), limit: parseInt(limit)};
 			}
 			add(name);
 			$('#avAcc option').remove();
@@ -350,8 +351,8 @@
 		}
 
 		var phonePrice = function(){
-			var phone = parseInt(document.getElementById('phone').value);
-			var ir = parseInt(document.getElementById('ir').value);
+			var phone = parseFloat(document.getElementById('phone').value);
+			var ir = parseFloat(document.getElementById('ir').value);
 			ir = Math.min(ir, phone);
 			phone = phone + (phone * 0.09) - ir;
 			return phone;
